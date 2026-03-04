@@ -309,7 +309,7 @@
                   disabledMonitors = cfg.greeter.disabledMonitors;
                   scale = cfg.greeter.scale;
                   wallpaperDir = cfg.wallpaperDir;
-                  qemuConnectionUrl = cfg.qemuConnectionUrl;
+                  qemuConnectionUrl = cfg.shell.qemuConnectionUrl;
                 };
               description = "Final eyezah-ui package derivation.";
             };
