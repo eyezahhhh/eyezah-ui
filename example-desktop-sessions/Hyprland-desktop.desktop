@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Hyprland Desktop
+Comment=Desktop mode for casual use
+Exec=/nix/store/zxq3rqzxl2wlk9hqfkywigqyv1k9i87g-hyprland-0.52.1/bin/Hyprland --config ~/.config/hypr/desktop.conf
+Type=Application

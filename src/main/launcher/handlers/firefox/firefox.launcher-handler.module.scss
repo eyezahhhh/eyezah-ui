@@ -1,0 +1,11 @@
+@use "../../../../theme.scss";
+
+.engineName {
+	font-size: 1.5rem;
+	margin-top: 10px;
+	color: theme.$text-secondary;
+}
+
+.query {
+	font-size: 1.3rem;
+}

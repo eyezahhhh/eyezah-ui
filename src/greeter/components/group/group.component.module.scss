@@ -1,0 +1,23 @@
+@use "../../../theme.scss";
+
+.paddingContainer {
+	padding: 4px;
+}
+
+.container {
+	all: unset;
+	background: theme.$background-transparent;
+	transition: background 1s;
+	border-radius: 10px;
+	padding: 3px;
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+
+	&:focus {
+		outline-color: theme.$background;
+	}
+}
+
+.button {
+	all: unset;
+}

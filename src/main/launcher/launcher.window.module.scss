@@ -1,0 +1,71 @@
+@use "../../theme";
+
+.window {
+	background: transparent;
+}
+
+.container {
+	color: theme.$text;
+	background: theme.$background-transparent;
+	transition: background-color 0.5s;
+	border-radius: 10px;
+
+	.input {
+		font-size: 2rem;
+		background: transparent;
+		padding: 10px 14px;
+		border: none;
+		outline: none;
+
+		selection {
+			background: rgba(theme.$wallust-color1, 0.5);
+		}
+	}
+
+	.categories {
+		padding: 10px;
+
+		.category {
+			margin-top: 6px;
+
+			.categoryName {
+				color: theme.$text-secondary;
+				margin: 5px 0 3px 3px;
+			}
+
+			.categoryEntry {
+				all: unset;
+				border-radius: 5px;
+				padding: 3px 6px 3px 3px;
+				font-weight: normal;
+
+				image {
+					margin-right: 3px;
+				}
+
+				label {
+					font-size: 1.2rem;
+				}
+
+				&:focus {
+					background: theme.$background-focus;
+				}
+			}
+		}
+	}
+
+	.loadingIcons {
+		margin: 10px;
+
+		.loadingIcon {
+			margin-right: 4px;
+			color: theme.$placeholder-color;
+		}
+	}
+
+	.content {
+		margin-right: 5px;
+		padding-right: 5px;
+		margin-left: 5px;
+	}
+}

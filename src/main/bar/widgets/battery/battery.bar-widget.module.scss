@@ -1,0 +1,23 @@
+.button {
+	all: unset;
+	padding: 0 6px;
+
+	.label {
+		margin-left: 6px;
+		font-size: 16px;
+	}
+
+	.icon {
+		&.percent-warning {
+			color: #ff2600;
+		}
+
+		&.percent-danger {
+			color: #ff2600;
+		}
+
+		&.charging {
+			color: #00b828;
+		}
+	}
+}

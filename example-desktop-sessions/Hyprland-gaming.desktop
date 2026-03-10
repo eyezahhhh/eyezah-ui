@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Hyprland Gaming
+Comment=Controller-friendly game mode
+Exec=sh -c 'echo $HOME > /home/eyezah/home.txt; exec /nix/store/zxq3rqzxl2wlk9hqfkywigqyv1k9i87g-hyprland-0.52.1/bin/Hyprland --config "$HOME/.config/hypr/gaming.conf"' 
+Type=Application

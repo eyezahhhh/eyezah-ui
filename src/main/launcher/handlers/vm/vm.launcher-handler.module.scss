@@ -1,0 +1,48 @@
+@use "../../../../theme.scss";
+
+.entry {
+	all: unset;
+	border-radius: 5px;
+	padding: 3px 5px;
+
+	image {
+		margin-right: 3px;
+	}
+
+	label {
+		font-size: 1.2rem;
+	}
+
+	&:focus,
+	&:hover {
+		background: theme.$background-focus;
+	}
+}
+
+.name {
+	font-size: 1.6rem;
+}
+
+.status {
+	color: theme.$text-secondary;
+	margin-bottom: 10px;
+}
+
+.buttons {
+	button {
+		color: theme.$text-secondary;
+		border: none;
+		background: theme.$background-transparent;
+		outline: none;
+		box-shadow: none;
+		text-shadow: none;
+		padding: 7px;
+		border-radius: 10px;
+		margin: 0 5px;
+
+		&:hover,
+		&:focus {
+			background: theme.$background-focus;
+		}
+	}
+}

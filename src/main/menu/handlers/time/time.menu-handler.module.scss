@@ -1,0 +1,31 @@
+@use "../../../../theme";
+
+.date {
+	.main {
+		font-family: "Oswald";
+		font-size: 2rem;
+		font-weight: 200;
+	}
+
+	.aux {
+		font-family: "Roboto";
+		font-weight: 400;
+		line-height: 1rem;
+		padding-bottom: 0px;
+
+		.suffix {
+			margin-right: 6px;
+		}
+
+		.month {
+			padding-left: 5px;
+			padding-right: 10px;
+		}
+	}
+}
+
+.calendar {
+	background: transparent;
+	color: theme.$text;
+	border: none;
+}

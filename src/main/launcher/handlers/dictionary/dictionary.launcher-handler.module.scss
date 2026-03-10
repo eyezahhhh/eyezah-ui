@@ -1,0 +1,28 @@
+@use "../../../../theme.scss";
+
+.container {
+	margin-bottom: 20px;
+
+	.top {
+		margin: 15px 15px 0 15px;
+
+		.word {
+			font-size: 2rem;
+			margin-right: 10px;
+		}
+	}
+
+	.partOfSpeech {
+		font-size: 1.2rem;
+		margin: 15px 15px 0 15px;
+	}
+
+	.definition {
+		margin: 10px 15px 0 30px;
+	}
+
+	.example {
+		margin: 0 15px 0 30px;
+		color: theme.$text-secondary;
+	}
+}

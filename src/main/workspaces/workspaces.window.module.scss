@@ -1,0 +1,39 @@
+@use "../../theme.scss";
+
+.window {
+	background: transparent;
+}
+
+.container {
+	// background: rgba(255, 0, 0, 0.3);
+	// background: rgba(0, 0, 0, 0.1);
+	background: transparent;
+}
+
+.workspace {
+	background: transparent;
+	// background: red;
+
+	.previewContainer {
+		background: rgba(theme.$wallust-color2, 0.7);
+		border-radius: 5px;
+
+		.previewClient {
+			all: unset;
+			background: rgba(theme.$wallust-color6, 0.8);
+			border-radius: 4px;
+		}
+	}
+
+	&.active {
+		// background: blue;
+
+		.previewContainer {
+			background: rgba(theme.$wallust-color3, 0.7);
+
+			.previewClient {
+				background: rgba(theme.$wallust-color5, 0.8);
+			}
+		}
+	}
+}

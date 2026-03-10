@@ -1,0 +1,19 @@
+@use "../../theme";
+
+.window {
+	background: transparent;
+	font-family: theme.$font-main;
+}
+
+.container {
+	background: theme.$background-transparent;
+	color: theme.$text;
+	min-height: 24px;
+	padding: 0 12px;
+
+	.currentApp {
+		.appIcon {
+			margin-right: 8px;
+		}
+	}
+}

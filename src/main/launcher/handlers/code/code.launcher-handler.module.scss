@@ -1,0 +1,20 @@
+@use "../../../../theme.scss";
+
+.entry {
+	all: unset;
+	border-radius: 5px;
+	padding: 3px 5px;
+
+	image {
+		margin-right: 3px;
+	}
+
+	label {
+		font-size: 1.2rem;
+	}
+
+	&:focus,
+	&:hover {
+		background: theme.$background-focus;
+	}
+}

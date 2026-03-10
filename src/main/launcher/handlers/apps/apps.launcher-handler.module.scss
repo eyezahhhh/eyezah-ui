@@ -1,0 +1,27 @@
+@use "../../../../theme.scss";
+
+.container {
+	.name {
+		font-size: 1.6rem;
+	}
+
+	.description {
+		color: theme.$text-secondary;
+	}
+
+	.launch {
+		border: none;
+		background: theme.$background-transparent;
+		outline: none;
+		box-shadow: none;
+		text-shadow: none;
+		padding: 5px 20px;
+		border-radius: 50px;
+		margin-top: 20px;
+
+		&:hover,
+		&:focus {
+			background: theme.$background-focus;
+		}
+	}
+}

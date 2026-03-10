@@ -1,0 +1,17 @@
+@use "../../../theme";
+
+.button {
+	margin-right: 4px;
+}
+
+.label {
+	font-family: theme.$font-main;
+	color: theme.$text;
+	font-size: 16px;
+}
+
+.subLabel {
+	font-family: theme.$font-main;
+	color: theme.$text-secondary;
+	font-size: 14px;
+}

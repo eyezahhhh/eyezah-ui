@@ -1,0 +1,33 @@
+@use "../../../theme.scss";
+
+.window {
+	background: transparent;
+}
+
+.overlayContainer {
+	margin-right: 16px;
+}
+
+.slider {
+	all: unset;
+	padding: 10px;
+
+	trough {
+		min-width: 200px;
+		background: rgba(theme.$text-secondary, 0.3);
+		min-height: 32px;
+		border: none;
+		border-radius: 5px;
+
+		slider {
+			background: #fff;
+			border: none;
+			opacity: 0;
+		}
+	}
+
+	highlight {
+		background: rgba(theme.$wallust-color4, 1);
+		border-radius: 0;
+	}
+}

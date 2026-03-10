@@ -1,0 +1,20 @@
+@use "../../../../theme";
+
+.button {
+    &>button {
+        background: green;
+        all: unset;
+        padding: 0 6px;
+    }
+
+    popover {
+        arrow {
+            all: unset;
+        }
+
+        contents {
+            background: theme.$background-transparent;
+            color: theme.$text;
+        }
+    }
+}

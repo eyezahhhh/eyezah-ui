@@ -1,0 +1,13 @@
+@use "../../theme";
+
+.window {
+	background: transparent;
+	border-radius: 8px;
+}
+
+.container {
+	background: theme.$background-transparent;
+	color: theme.$text;
+	padding: 8px;
+	border-radius: 8px;
+}

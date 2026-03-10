@@ -1,0 +1,12 @@
+@use "../../../../theme.scss";
+
+.container {
+	.leftSide {
+		font-size: 1.3rem;
+		color: theme.$text-secondary;
+	}
+
+	.rightSide {
+		font-size: 1.6rem;
+	}
+}

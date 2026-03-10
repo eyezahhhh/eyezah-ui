@@ -1,0 +1,24 @@
+@use "../../theme";
+
+.slider {
+	all: unset;
+	margin: 0 10px;
+
+	trough {
+		min-width: 100px;
+		background: rgba(theme.$text-secondary, 0.3);
+		min-height: 6px;
+		border: none;
+		border-radius: 3px;
+
+		slider {
+			background: #fff;
+			border: none;
+		}
+	}
+
+	highlight {
+		background: #fff;
+		min-height: 6px;
+	}
+}
