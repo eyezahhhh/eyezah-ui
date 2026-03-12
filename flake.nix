@@ -39,6 +39,7 @@
                              , homeDirectory ? "/home/eyezah"
                              , enableShell ? true
                              , enableGreeter ? false
+                             , enableTouchbar ? false
                              , sessionsDir ? "/usr/share/wayland-sessions"
                              , enabledMonitors ? null
                              , disabledMonitors ? null
@@ -158,6 +159,17 @@
                 ${pkgs.lib.optionalString (scale != null) "-d \"SCALE='${toString scale}'\""} \
                 ${pkgs.lib.optionalString (wallpaperDir != null) "-d \"WALLPAPER_DIR='${wallpaperDir}'\""} \
                 ${pkgs.lib.optionalString (greeterCursorTheme != null) "-d \"CURSOR_THEME='${greeterCursorTheme}'\""}
+            ''
+            + pkgs.lib.optionalString enableTouchbar ''
+              echo "Bundling touchbar..."
+
+              ags bundle touchbar.app.ts \
+                $out/bin/${pname}-touchbar \
+                --root . \
+                --gtk 4 \
+                -d "SRC='$out/share'" \
+                -d "INSTANCE_ID='${instanceId}'" \
+                ${pkgs.lib.optionalString (wallpaperDir != null) "-d \"WALLPAPER_DIR='${wallpaperDir}'\""}
             ''
             + ''
               runHook postInstall
@@ -314,6 +326,10 @@
               };
             };
 
+            touchbar = {
+              enable = lib.mkEnableOption "Eyezah UI Touchbar";
+            };
+
             instanceId = lib.mkOption {
               type = lib.types.str;
               default = "eyezah-ui";
@@ -328,6 +344,7 @@
                   homeDirectory = config.home.homeDirectory;
                   enableShell = cfg.shell.enable;
                   enableGreeter = cfg.greeter.enable;
+                  enableTouchbar = cfg.touchbar.enable;
                   sessionsDir = cfg.greeter.sessionsDir;
                   enabledMonitors = cfg.greeter.enabledMonitors;
                   disabledMonitors = cfg.greeter.disabledMonitors;
