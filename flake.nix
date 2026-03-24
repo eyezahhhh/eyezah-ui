@@ -146,7 +146,8 @@
                 --root . \
                 --gtk 4 \
                 -d "SRC='$out/share'" \
-                -d "INSTANCE_ID='${instanceId}'"
+                -d "INSTANCE_ID='${instanceId}'" \
+                -d "CONFIG='$out/share/config.yaml'"
             ''
             + pkgs.lib.optionalString enableGreeter ''
               echo "Bundling greeter..."
@@ -156,7 +157,8 @@
                 --root . \
                 --gtk 4 \
                 -d "SRC='$out/share'" \
-                -d "INSTANCE_ID='${instanceId}'"
+                -d "INSTANCE_ID='${instanceId}'" \
+                -d "CONFIG='$out/share/config.yaml'"
             ''
             + ''
               runHook postInstall
