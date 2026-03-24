@@ -263,7 +263,7 @@
             greeter.enable = lib.mkEnableOption "Eyezah UI greeter";
 
             settings = lib.mkOption {
-              type = lib.types.attrs;
+              type = lib.types.attrsOf lib.types.anything;
               default = { };
               description = "Freeform config written to YAML.";
             };

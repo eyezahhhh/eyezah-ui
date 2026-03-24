@@ -26,7 +26,7 @@ app.start({
 	css: `${CACHE_DIRECTORY}/style.css`,
 	instanceName: `${CLASS}_greeter`,
 	iconTheme: "Papirus",
-	cursorTheme: Config.getString("greeter.cursorTheme", true) || undefined,
+	cursorTheme: Config.getString("greeter.cursorTheme"),
 	main: () => {
 		makeDirectoryRecursiveSync(Gio.File.new_for_path(CACHE_DIRECTORY));
 		generateStylesSync(IS_DEV);
