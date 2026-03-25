@@ -17,11 +17,13 @@ import { readFileAsync } from "ags/file";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import styles from "./code.launcher-handler.style";
 import { compareString } from "@util/string";
+import Config from "@util/config";
 
 const CACHE_LOCATION = `${CACHE_DIRECTORY}/code-recent.txt`;
 const PREFIX = "code";
 
-const COMMAND = "codium";
+const COMMAND = Config.getString("launcher.code.command", true) || "code";
+const ICON = Config.getString("launcher.code.icon", true) || "vscode";
 
 interface CachedLocation {
 	path: string;
@@ -232,7 +234,7 @@ export class CodeLauncherHandler extends LauncherHandler {
 			return [
 				{
 					id: "code",
-					icon: "vscodium",
+					icon: ICON,
 					name: "Open file or directory",
 				},
 			];
@@ -244,7 +246,7 @@ export class CodeLauncherHandler extends LauncherHandler {
 		return [
 			{
 				id: "code",
-				icon: "vscodium",
+				icon: ICON,
 				name: this.locationInfo.path,
 			},
 		];
@@ -348,6 +350,6 @@ export class CodeLauncherHandler extends LauncherHandler {
 	}
 
 	public getIcon(): string {
-		return "vscodium-symbolic";
+		return ICON;
 	}
 }
