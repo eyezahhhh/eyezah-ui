@@ -1,3 +1,4 @@
+import { exec } from "ags/process";
 import { Group } from "../group/group.component";
 import styles from "./power-button-group.component.style";
 
@@ -8,10 +9,10 @@ export function PowerButtonGroup() {
 			itemCssClasses={[styles.button]}
 			onClicked={(index) => {
 				if (index == 0) {
-					console.log("Shut down!"); // todo: shutdown
+					exec("shutdown now");
 				}
 				if (index == 1) {
-					console.log("Reboot"); //todo: reboot
+					exec("reboot");
 				}
 			}}
 		>
