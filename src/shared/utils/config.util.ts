@@ -97,7 +97,19 @@ export class ConfigSection {
 	getString(key: string, nullable?: false): string;
 	getString(key: string, nullable: true): string | null;
 	getString(key: string, nullable?: boolean) {
-		return this.getEnsureType(key, "string", nullable);
+		try {
+			if (key.endsWith("File")) {
+				throw new Error("Key is always a file");
+			}
+			const filePath = this.getEnsureType(`${key}File`, "string")!;
+			const contents = readFile(filePath); // todo: cache file contents for duplicate lookups
+			console.log(
+				`[CONFIG] Using file path for "${key}File" because it exists`,
+			);
+			return contents;
+		} catch {
+			return this.getEnsureType(key, "string", nullable);
+		}
 	}
 
 	getBoolean(key: string, nullable?: false): boolean;
