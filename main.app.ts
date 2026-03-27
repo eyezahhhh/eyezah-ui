@@ -20,6 +20,7 @@ import { WorkspacesWindow } from "main/workspaces/workspaces.window";
 import AppRequest from "@service/app-request";
 import { StatsWindow } from "main/stats/stats.window";
 import Config from "@util/config";
+import { DockWindow } from "main/dock/dock.window";
 
 const WALLUST_FILE = Config.getString("theme.wallustThemeFile");
 
@@ -52,6 +53,7 @@ app.start({
 					BarWindow(monitor),
 					WallpaperWindow(monitor),
 					StatsWindow({ gdkMonitor: monitor }),
+					DockWindow({ gdkMonitor: monitor }),
 				];
 				monitorWindows.set(monitor, windows);
 			}

@@ -2,7 +2,6 @@ import GObject from "gnim/gobject";
 import { MenuHandler } from "../menu-handler";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import { Accessor, createBinding, With } from "gnim";
-import { formatTime } from "@util/string";
 import { Gtk } from "ags/gtk4";
 import styles from "./power.menu-handler.style";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
@@ -18,6 +17,10 @@ export class PowerMenuHandler extends MenuHandler {
 	): GObject.Object {
 		const battery = AstalBattery.get_default();
 		const powerProfiles = AstalPowerProfiles.get_default();
+
+		setTimeout(() => {
+			console.log(powerProfiles.get_profiles());
+		}, 500);
 
 		return (
 			<box widthRequest={250}>

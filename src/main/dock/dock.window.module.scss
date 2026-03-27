@@ -1,0 +1,29 @@
+@use "../../theme";
+
+.window {
+	background: transparent;
+	font-family: theme.$font-main;
+}
+
+.container {
+	background: theme.$background-transparent;
+	color: theme.$text;
+	border-radius: 14px;
+	padding: 8px;
+
+	.background {
+		background: red;
+		min-height: 10px;
+		min-width: 10px;
+	}
+
+	.entryButton {
+		all: unset;
+		padding: 5px;
+		border-radius: 8px;
+
+		&:hover {
+			background: theme.$background-focus;
+		}
+	}
+}
