@@ -43,8 +43,14 @@ export async function fetch(
 		});
 	});
 
+	const responseHeaders: Record<string, string> = {};
+	message.responseHeaders.foreach((key, value) => {
+		responseHeaders[key] = value;
+	});
+
 	return new Response(inputStream, {
 		statusText: message.reason_phrase,
 		status: message.status_code,
+		headers: responseHeaders,
 	});
 }

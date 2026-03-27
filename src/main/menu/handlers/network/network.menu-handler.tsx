@@ -329,13 +329,25 @@ export class NetworkMenuHandler extends MenuHandler {
 		);
 		updateActiveWg();
 
+		const [isCheckingCaptivePortal, setIsCheckingCaptivePortal] =
+			createState(false);
+		const [hasCaptivePortal, setHasCaptivePortal] = createState(false);
+
 		let captivePortalCancellable: Gio.Cancellable | null = null;
 		const updateCaptivePortal = () => {
 			captivePortalCancellable?.cancel();
 			const cancellable = new Gio.Cancellable();
 			captivePortalCancellable = cancellable;
+			setIsCheckingCaptivePortal(true);
 
-			detectCaptivePortal(cancellable).then(() => {});
+			detectCaptivePortal(cancellable)
+				.then(setHasCaptivePortal)
+				.finally(() => {
+					if (captivePortalCancellable == cancellable) {
+						setIsCheckingCaptivePortal(false);
+						captivePortalCancellable = null;
+					}
+				});
 		};
 
 		updateCaptivePortal();
@@ -446,6 +458,36 @@ export class NetworkMenuHandler extends MenuHandler {
 										>
 											<image iconName="view-refresh-symbolic" />
 										</ToggleButton>
+										<box>
+											<With
+												value={
+													createComputed(
+														() =>
+															isCheckingCaptivePortal() || hasCaptivePortal(),
+													) as Accessor<boolean>
+												}
+											>
+												{(show) =>
+													show && (
+														<ToggleButton
+															cssClasses={[styles.wifiSectionButton]}
+															disabled={isCheckingCaptivePortal}
+															onClicked={() => {
+																if (hasCaptivePortal()) {
+																	Gio.AppInfo.launch_default_for_uri(
+																		"http://connectivity-check.ubuntu.com",
+																		null,
+																	);
+																	setMenu(null);
+																}
+															}}
+														>
+															<image iconName="lock-symbolic" />
+														</ToggleButton>
+													)
+												}
+											</With>
+										</box>
 									</box>
 									<With
 										value={

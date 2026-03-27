@@ -91,57 +91,6 @@ export function getRescanningWifiAccessor() {
 	return rescanningWifi;
 }
 
-// export function ping(
-// 	address: string,
-// 	options: {
-// 		timeout: number;
-// 		attempts?: number;
-// 		interface?: string;
-// 	},
-// ) {
-// 	const command = ["ping", "-q", "-W", "1", "-c", `${options.attempts || 1}`];
-// 	if (options.interface) {
-// 		command.push("-I", options.interface);
-// 	}
-// 	command.push(address);
-// 	const child = createCommandProcess(["bash", "-c", command.join(" ")]);
-// 	const promise: Partial<KillablePromise<number>> = new Promise(
-// 		(resolve, reject) => {
-// 			let finished = false;
-
-// 			child
-// 				.then((output) => {
-// 					const match = output.match(/rtt.*=\s*[\d.]+\/([\d.]+)\//);
-// 					const responseTime = match ? parseFloat(match[1]) : null;
-
-// 					if (responseTime) {
-// 						resolve(Math.round(responseTime));
-// 					} else {
-// 						console.error("UNSUCCESSFUL PING:", output);
-// 						reject(new Error("Failed to ping"));
-// 					}
-// 				})
-// 				.catch((error) => {
-// 					if (!finished) {
-// 						reject(error);
-// 					}
-// 				})
-// 				.finally(() => {
-// 					finished = true;
-// 				});
-
-// 			setTimeout(() => {
-// 				if (!finished) {
-// 					child.kill();
-// 				}
-// 			}, options.timeout);
-// 		},
-// 	);
-// 	promise.kill = () => child.kill();
-
-// 	return promise as KillablePromise<number>;
-// }
-
 export function ping(
 	address: string,
 	options: {
@@ -270,9 +219,11 @@ export async function detectCaptivePortal(cancellable?: Gio.Cancellable) {
 	try {
 		const response = await fetch("http://connectivity-check.ubuntu.com", {
 			cancellable,
+			method: "HEAD",
 		});
-		console.log(response);
-	} catch (e) {
-		console.error(e);
+
+		return response.status != 204;
+	} catch {
+		return false;
 	}
 }
