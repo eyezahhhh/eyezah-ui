@@ -192,3 +192,46 @@ export function writeFileOrSymlink(
 		);
 	});
 }
+
+export function parseDesktopFile(content: string) {
+	const lines = content.split(/\r?\n/);
+	let firstValidLine = true;
+	let foundHeader = false;
+	const result: Record<string, string> = {};
+
+	for (let line of lines) {
+		line = line.trim();
+
+		if (!line || line.startsWith("#")) {
+			continue;
+		}
+
+		if (firstValidLine) {
+			if (line !== "[Desktop Entry]") {
+				throw new Error(
+					"Invalid .desktop file: Missing or incorrect [Desktop Entry] header.",
+				);
+			}
+			foundHeader = true;
+			firstValidLine = false;
+			continue;
+		}
+
+		if (line.startsWith("[") && line.endsWith("]")) {
+			break;
+		}
+
+		const equalSignIndex = line.indexOf("=");
+		if (equalSignIndex > 0) {
+			const key = line.substring(0, equalSignIndex).trim();
+			const value = line.substring(equalSignIndex + 1).trim();
+			result[key] = value;
+		}
+	}
+
+	if (!foundHeader) {
+		throw new Error("Invalid .desktop file: File is empty or malformed.");
+	}
+
+	return result;
+}

@@ -30,7 +30,7 @@ export function setMenu(
 	visibilityTimer?.cancel();
 
 	if (handlerClass) {
-		if (activeHandler.get()) {
+		if (activeHandler.peek()) {
 			visibilityTimer = timeout(100, () => {
 				setActiveHandler({
 					handler: handlerClass,

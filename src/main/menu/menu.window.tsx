@@ -14,7 +14,7 @@ export function MenuWindow() {
 
 	const stateAccessor = getActiveHandlerStateAccessor();
 	const disconnect = stateAccessor.subscribe(() => {
-		const handlerInfo = stateAccessor.get();
+		const handlerInfo = stateAccessor.peek();
 		if (handlerInfo.handler) {
 			for (let handler of MENU_HANDLERS) {
 				if (handler instanceof handlerInfo.handler) {
@@ -35,13 +35,16 @@ export function MenuWindow() {
 		disconnect();
 	});
 
-	const computedBind = createComputed(
-		() =>
-			[handler(), stateAccessor().handler] as [
-				MenuHandler | null,
-				string | number | null,
-			],
-	);
+	const computedBind = createComputed(() => {
+		const state = stateAccessor();
+		const menuHandler = handler();
+		let data: string | number | null = null;
+		if (state.handler) {
+			data = state.data;
+		}
+
+		return [menuHandler, data] as [MenuHandler | null, string | number | null];
+	});
 
 	const window = (
 		<window

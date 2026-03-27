@@ -1,47 +1,10 @@
 import Gio from "gi://Gio?version=2.0";
-import { scanDirectory } from "./file.util";
+import { parseDesktopFile, scanDirectory } from "./file.util";
 import { readFileAsync } from "ags/file";
 import { IDesktopSession } from "@interface/desktop-session";
 
 export function parseDesktopSessionFile(content: string): IDesktopSession {
-	const lines = content.split(/\r?\n/);
-	let foundHeader = false;
-	let firstValidLine = true;
-	const result: Record<string, string> = {};
-
-	for (let line of lines) {
-		line = line.trim();
-
-		if (!line || line.startsWith("#")) {
-			continue;
-		}
-
-		if (firstValidLine) {
-			if (line !== "[Desktop Entry]") {
-				throw new Error(
-					"Invalid .desktop file: Missing or incorrect [Desktop Entry] header.",
-				);
-			}
-			foundHeader = true;
-			firstValidLine = false;
-			continue;
-		}
-
-		if (line.startsWith("[") && line.endsWith("]")) {
-			break;
-		}
-
-		const equalSignIndex = line.indexOf("=");
-		if (equalSignIndex > 0) {
-			const key = line.substring(0, equalSignIndex).trim();
-			const value = line.substring(equalSignIndex + 1).trim();
-			result[key] = value;
-		}
-	}
-
-	if (!foundHeader) {
-		throw new Error("Invalid .desktop file: File is empty or malformed.");
-	}
+	const result = parseDesktopFile(content);
 
 	if (!result.Name) {
 		throw new Error(`Invalid .desktop file: File doesn't contain name`);
