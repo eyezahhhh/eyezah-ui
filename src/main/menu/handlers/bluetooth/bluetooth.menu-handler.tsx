@@ -3,22 +3,25 @@ import { MenuHandler } from "../menu-handler";
 import styles from "./bluetooth.menu-handler.style";
 import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 import { Gtk } from "ags/gtk4";
-import {
-	Accessor,
-	createBinding,
-	createComputed,
-	createState,
-	For,
-	With,
-} from "gnim";
-import { ClickableListEntry } from "@components/clickable-list-entry/clickable-list-entry";
-import { createCursorPointer } from "@util/ags";
+import { Accessor, createBinding, createState, For, With } from "gnim";
 import { ToggleButton } from "@components/toggle-button/toggle-button";
 import { BluetoothDevice } from "@components/bluetooth-device/bluetooth-device";
+import { doesCommandExist } from "@util/cli";
+import AstalHyprland from "gi://AstalHyprland?version=0.1";
+import { setMenu } from "main/menu/menu.manager";
 
 export class BluetoothMenuHandler extends MenuHandler {
+	private isBluemanInstalled: Accessor<boolean>;
+
 	constructor() {
 		super("bluetooth");
+
+		const [isBluemanInstalled, setIsBluemanInstalled] = createState(false);
+		this.isBluemanInstalled = isBluemanInstalled;
+
+		doesCommandExist("blueman-manager", "--help").then((exists) => {
+			setIsBluemanInstalled(exists);
+		});
 	}
 
 	public getContent(
@@ -32,8 +35,9 @@ export class BluetoothMenuHandler extends MenuHandler {
 
 		return (
 			<box orientation={Gtk.Orientation.VERTICAL} widthRequest={250}>
-				<box>
+				<box cssClasses={[styles.buttons]}>
 					<ToggleButton
+						cssClasses={[styles.button]}
 						onClicked={() => {
 							const adapter = bt.get_adapter();
 							if (adapter) {
@@ -57,6 +61,25 @@ export class BluetoothMenuHandler extends MenuHandler {
 							)}
 						</With>
 					</ToggleButton>
+					<box>
+						<With value={this.isBluemanInstalled}>
+							{(installed) =>
+								installed && (
+									<ToggleButton
+										cssClasses={[styles.button]}
+										onClicked={() => {
+											AstalHyprland.get_default().message(
+												`dispatch exec blueman-manager`,
+											);
+											setMenu(null);
+										}}
+									>
+										<image iconName="org.gnome.Settings-symbolic" />
+									</ToggleButton>
+								)
+							}
+						</With>
+					</box>
 				</box>
 				<box orientation={Gtk.Orientation.VERTICAL}>
 					<For
