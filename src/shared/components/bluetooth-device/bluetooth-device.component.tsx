@@ -37,6 +37,13 @@ export function BluetoothDevice({ device, isOpen, onClicked }: Props) {
 
 					return null;
 				})}
+				iconName={createBinding(device, "icon")}
+				endLabel={createBinding(device, "battery_percentage").as((percent) => {
+					if (percent == -1) {
+						return null;
+					}
+					return `${percent * 100}%`;
+				})}
 				onClicked={getOptional(onClicked)}
 			/>
 			<revealer revealChild={isOpen}>
