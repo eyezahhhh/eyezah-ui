@@ -25,11 +25,14 @@ import { TrayBarWidget } from "./widgets/tray/tray.bar-widget";
 import AstalHyprland from "gi://AstalHyprland";
 import { ControlCenterMenuHandler } from "main/menu/handlers/control-center/control-center.menu-handler";
 import { createCursorPointer } from "@util/ags";
+import AstalBluetooth from "gi://AstalBluetooth?version=0.1";
 
 Hyprshade.get_default();
 
 export function BarWindow(gdkMonitor: Gdk.Monitor) {
 	const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
+
+	const bluetooth = AstalBluetooth.get_default();
 
 	const RIGHT_WIDGETS = [
 		// <label label="❤️" />,
@@ -39,11 +42,13 @@ export function BarWindow(gdkMonitor: Gdk.Monitor) {
 				onClicked={() => toggleMenu(AudioMenuHandler, "right")}
 			/>
 		),
-		() => (
-			<BluetoothBarWidget
-				onClicked={() => toggleMenu(BluetoothMenuHandler, "right")}
-			/>
-		),
+		bluetooth.get_adapter()
+			? () => (
+					<BluetoothBarWidget
+						onClicked={() => toggleMenu(BluetoothMenuHandler, "right")}
+					/>
+				)
+			: null,
 		() => (
 			<BrightnessBarWidget
 				onClicked={() => toggleMenu(DisplayMenuHandler, "right")}
@@ -62,7 +67,7 @@ export function BarWindow(gdkMonitor: Gdk.Monitor) {
 		() => (
 			<ClockBarWidget onClicked={() => toggleMenu(TimeMenuHandler, "right")} />
 		),
-	] as const;
+	].filter((callback) => !!callback);
 
 	const hyprland = AstalHyprland.get_default();
 	const focusedClient = createBinding(hyprland, "focusedClient");
