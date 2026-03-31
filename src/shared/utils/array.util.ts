@@ -33,3 +33,9 @@ export function split<T>(array: T[], rowSize: number) {
 
 	return rows;
 }
+
+export function loop<T>(iterations: number, callback: (index: number) => T) {
+	return Array(iterations)
+		.fill(null)
+		.map((_, i) => callback(i));
+}

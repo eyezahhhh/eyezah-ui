@@ -2,13 +2,21 @@ import { CLASS } from "@const/class";
 import { Destroyer } from "@util/destroyer";
 import { Astal, Gdk, Gtk } from "ags/gtk4";
 import AstalHyprland from "gi://AstalHyprland?version=0.1";
-import { Accessor, createBinding, createState, For, onCleanup } from "gnim";
+import {
+	Accessor,
+	createBinding,
+	createState,
+	For,
+	onCleanup,
+	With,
+} from "gnim";
 import styles from "./workspaces.window.style";
 import { cc, compareString } from "@util/string";
 import AppRequest from "@service/app-request";
 import { getWindowIcon } from "@util/icon";
 import app from "ags/gtk4/app";
 import { createCursorPointer } from "@util/ags";
+import { loop } from "@util/array";
 
 const syncHyprland = async (hyprland: AstalHyprland.Hyprland) => {
 	await Promise.all([
@@ -45,6 +53,87 @@ interface MonitorInfo {
 	name: string;
 	monitor: AstalHyprland.Monitor;
 	workspaces: WorkspaceInfo[];
+	x: number;
+	y: number;
+}
+
+function determineMonitorLayout(points: { x: number; y: number }[]) {
+	if (!points.length) {
+		return [];
+	}
+
+	// 1. Normalize to positive space
+	const minX = Math.min(...points.map((p) => p.x));
+	const minY = Math.min(...points.map((p) => p.y));
+
+	const normalized = points.map((p) => ({
+		x: p.x - minX,
+		y: p.y - minY,
+		original: p,
+	}));
+
+	// 2. Sort separately to find row/column groupings
+	const sortedByX = [...normalized].sort((a, b) => a.x - b.x);
+	const sortedByY = [...normalized].sort((a, b) => a.y - b.y);
+
+	// 3. Build clusters (group similar coords)
+	function cluster(values: number[], threshold: number): number[] {
+		const groups: number[] = [];
+		let current = values[0];
+
+		groups.push(current);
+
+		for (let i = 1; i < values.length; i++) {
+			if (Math.abs(values[i] - current) > threshold) {
+				current = values[i];
+				groups.push(current);
+			}
+		}
+
+		return groups;
+	}
+
+	// Estimate spacing from median difference
+	function estimateSpacing(values: number[]): number {
+		const diffs: number[] = [];
+		for (let i = 1; i < values.length; i++) {
+			diffs.push(values[i] - values[i - 1]);
+		}
+		diffs.sort((a, b) => a - b);
+		return diffs[Math.floor(diffs.length / 2)] || 1;
+	}
+
+	const xs = sortedByX.map((p) => p.x);
+	const ys = sortedByY.map((p) => p.y);
+
+	const spacingX = estimateSpacing(xs);
+	const spacingY = estimateSpacing(ys);
+
+	const colAnchors = cluster(xs, spacingX / 2);
+	const rowAnchors = cluster(ys, spacingY / 2);
+
+	// 4. Assign each point to nearest row/col
+	function nearestIndex(value: number, anchors: number[]): number {
+		let best = 0;
+		let bestDist = Infinity;
+
+		for (let i = 0; i < anchors.length; i++) {
+			const d = Math.abs(value - anchors[i]);
+			if (d < bestDist) {
+				bestDist = d;
+				best = i;
+			}
+		}
+
+		return best;
+	}
+
+	// 5. Build final dense grid
+	return normalized.map((p) => ({
+		original: p.original,
+		gridX: nearestIndex(p.x, colAnchors),
+		gridY: nearestIndex(p.y, rowAnchors),
+	}));
 }
 
 export function WorkspacesWindow() {
@@ -110,10 +199,16 @@ export function WorkspacesWindow() {
 			if (info) {
 				info.workspaces.push(workspace);
 			} else {
+				const { monitor } = workspace.workspace;
+				const x = monitor.x + monitor.width / 2;
+				const y = monitor.y + monitor.height / 2;
+
 				monitors.set(workspace.workspace.monitor, {
 					name: workspace.workspace.monitor.name,
 					monitor: workspace.workspace.monitor,
 					workspaces: [workspace],
+					x,
+					y,
 				});
 			}
 		}
@@ -121,6 +216,18 @@ export function WorkspacesWindow() {
 		const monitorArray = Array.from(monitors.values()).sort((a, b) =>
 			compareString(a.name, b.name),
 		);
+
+		const grid = determineMonitorLayout(
+			monitorArray.map((info) => ({
+				x: info.x,
+				y: info.y,
+			})),
+		);
+
+		for (const [index, { gridX, gridY }] of grid.entries()) {
+			monitorArray[index].x = gridX;
+			monitorArray[index].y = gridY;
+		}
 
 		setWorkspaces(monitorArray);
 
@@ -235,21 +342,55 @@ export function WorkspacesWindow() {
 					}
 				}}
 			/>
-			<box hexpand vexpand cssClasses={[styles.container]}>
-				<For each={workspaces}>
-					{(monitor) => (
-						<box halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} hexpand>
-							{monitor.workspaces.map(({ workspace, clients }) => (
-								<Workspace
-									workspace={workspace}
-									clients={clients}
-									active={activeWorkspace.as((id) => workspace.id === id)}
-									onClick={() => goToWorkspace(workspace)}
-								/>
-							))}
-						</box>
-					)}
-				</For>
+			<box
+				hexpand
+				cssClasses={[styles.container]}
+				orientation={Gtk.Orientation.VERTICAL}
+				valign={Gtk.Align.CENTER}
+			>
+				<With value={workspaces}>
+					{(workspaces) => {
+						const rows = Math.max(...workspaces.map((w) => w.y + 1), 0);
+						const columns = Math.max(...workspaces.map((w) => w.x + 1), 0);
+						const maxWorkspaces = Math.max(
+							...workspaces.flatMap((w) => w.workspaces.length),
+							0,
+						);
+
+						return (
+							<box orientation={Gtk.Orientation.VERTICAL}>
+								{loop(rows, (row) => (
+									<box>
+										{workspaces
+											.filter((info) => info.y == row)
+											.map((monitor) => (
+												<box
+													cssClasses={[styles.monitor]}
+													widthRequest={320 * maxWorkspaces}
+													halign={Gtk.Align.CENTER}
+												>
+													<box halign={Gtk.Align.CENTER} hexpand>
+														{monitor.workspaces.map(
+															({ workspace, clients }) => (
+																<Workspace
+																	workspace={workspace}
+																	clients={clients}
+																	active={activeWorkspace.as(
+																		(id) => workspace.id === id,
+																	)}
+																	onClick={() => goToWorkspace(workspace)}
+																/>
+															),
+														)}
+													</box>
+												</box>
+											))}
+									</box>
+								))}
+							</box>
+						);
+					}}
+				</With>
 			</box>
 		</window>
 	) as Gtk.Window;
@@ -273,6 +414,8 @@ function Workspace({ workspace, clients, active, onClick }: WorkspaceProps) {
 			)}
 			onClicked={onClick}
 			cursor={createCursorPointer()}
+			halign={Gtk.Align.CENTER}
+			hexpand
 		>
 			<box orientation={Gtk.Orientation.VERTICAL}>
 				<label label={workspace.name} />

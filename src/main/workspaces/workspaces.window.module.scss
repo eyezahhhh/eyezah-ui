@@ -10,29 +10,32 @@
 	background: transparent;
 }
 
-.workspace {
-	background: transparent;
-	// background: red;
-
-	.previewContainer {
-		background: rgba(theme.$wallust-color2, 0.7);
-		border-radius: 5px;
-
-		.previewClient {
-			all: unset;
-			background: rgba(theme.$wallust-color6, 0.8);
-			border-radius: 4px;
-		}
-	}
-
-	&.active {
-		// background: blue;
+.monitor {
+	.workspace {
+		background: transparent;
+		all: unset;
+		padding: 10px;
 
 		.previewContainer {
-			background: rgba(theme.$wallust-color3, 0.7);
+			background: rgba(theme.$wallust-color2, 0.7);
+			border-radius: 5px;
 
 			.previewClient {
-				background: rgba(theme.$wallust-color5, 0.8);
+				all: unset;
+				background: rgba(theme.$wallust-color6, 0.8);
+				border-radius: 4px;
+			}
+		}
+
+		&.active {
+			// background: blue;
+
+			.previewContainer {
+				background: rgba(theme.$wallust-color3, 0.7);
+
+				.previewClient {
+					background: rgba(theme.$wallust-color5, 0.8);
+				}
 			}
 		}
 	}
