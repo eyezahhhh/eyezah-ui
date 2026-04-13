@@ -21,6 +21,7 @@ import AppRequest from "@service/app-request";
 import { StatsWindow } from "main/stats/stats.window";
 import Config from "@util/config";
 import { DockWindow } from "main/dock/dock.window";
+import { PERSISTENT_STORAGE_DIRECTORY } from "@const/persistent-storage-directory";
 
 const WALLUST_FILE = Config.getString("theme.wallustThemeFile");
 
@@ -40,6 +41,9 @@ app.start({
 		const enableDock = Config.getBoolean("dock.enable", true);
 
 		makeDirectoryRecursiveSync(Gio.File.new_for_path(CACHE_DIRECTORY));
+		makeDirectoryRecursiveSync(
+			Gio.File.new_for_path(PERSISTENT_STORAGE_DIRECTORY),
+		);
 		generateStylesSync(IS_DEV);
 
 		const monitorWindows = new Map<Gdk.Monitor, Gtk.Window[]>();

@@ -18,8 +18,9 @@ import AstalHyprland from "gi://AstalHyprland?version=0.1";
 import styles from "./code.launcher-handler.style";
 import { compareString } from "@util/string";
 import Config from "@util/config";
+import { PERSISTENT_STORAGE_DIRECTORY } from "@const/persistent-storage-directory";
 
-const CACHE_LOCATION = `${CACHE_DIRECTORY}/code-recent.txt`;
+const CACHE_LOCATION = `${PERSISTENT_STORAGE_DIRECTORY}/code-recent.txt`;
 const PREFIX = "code";
 
 const COMMAND = Config.getString("launcher.code.command", true) || "code";
